@@ -1,12 +1,18 @@
-package com.ufp.security.core;
+package com.ufp.security.identity.core;
 
-public class NamedInput {
+public class DisplayItem {
     private String name;
     private String htmlInput;
+    private String nickName;
 
-    public NamedInput(String name, String htmlInput) {
+    public DisplayItem() {
+        this(null, null, null);
+    }
+
+    public DisplayItem(String name, String htmlInput, String nickName) {
         this.name = name;
         this.htmlInput = htmlInput;
+        this.nickName = nickName;
     }
         
     public String getName() {
@@ -24,4 +30,13 @@ public class NamedInput {
     public void setHtmlInput(String htmlInput) {
         this.htmlInput = htmlInput;
     }
+
+    public String getNickName() {
+        return this.nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
 }

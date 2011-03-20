@@ -1,4 +1,4 @@
-package com.ufp.security.authentication;
+package com.ufp.security.identity.authentication;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -7,14 +7,16 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
+import com.ufp.security.identity.core.DisplayItem;
+
 public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
-    private List<Object> credentials;
+    private List<DisplayItem> displayItems;
 
     public IdentityAuthenticationToken(Object principal) {
         super(null);
         this.principal = principal;
-        credentials = new ArrayList<Object>();
+        displayItems = new ArrayList<DisplayItem>();
         setAuthenticated(false);
     }
 
@@ -36,16 +38,21 @@ public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
 
     //~ Methods ========================================================================================================
 
-    public List<Object> getCredentials() {
-        return this.credentials;
-    }
-
-    public void addCredential(Object credential) {
-        credentials.add(credential);
-    }
-
     public Object getPrincipal() {
         return this.principal;
+    }
+
+    @Override
+    public Object getCredentials() {
+        return null;
+    }
+    
+    public void addDisplayItem(DisplayItem displayItem) {
+        displayItems.add(displayItem);
+    }
+     
+    public void clearDisplayItems() {
+        displayItems.clear();
     }
 
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
@@ -54,14 +61,4 @@ public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
         }
         super.setAuthenticated(false);
     }
-
-    @Override
-    public void eraseCredentials() {
-        super.eraseCredentials();
-        credentials.clear();
-        credentials = null;
-    }
-
-
-
 }

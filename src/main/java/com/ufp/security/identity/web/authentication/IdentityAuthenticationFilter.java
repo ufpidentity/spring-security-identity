@@ -1,4 +1,4 @@
-package com.ufp.security.web.authentication;
+package com.ufp.security.identity.web.authentication;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
-import com.ufp.security.authentication.IdentityAuthenticationToken;
+import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 
 public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";

@@ -1,11 +1,11 @@
-package com.ufp.security.authentication;
+package com.ufp.security.identity.authentication;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.authentication.AuthenticationProvider;
 
-import com.ufp.security.core.ContinueAuthenticationException;
-import com.ufp.security.core.NamedInput;
+import com.ufp.security.identity.core.ContinueAuthenticationException;
+import com.ufp.security.identity.core.DisplayItem;
 
 import org.apache.log4j.Logger;
 
@@ -15,7 +15,7 @@ public class IdentityAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         logger.debug("processing " + authentication);
         if (authentication instanceof IdentityAuthenticationToken) {
-            ((IdentityAuthenticationToken)authentication).addCredential(new NamedInput("AuthParam0", "<input type=\"text\" name=\"password\">"));
+            ((IdentityAuthenticationToken)authentication).addDisplayItem(new DisplayItem("AuthParam0", "<input type=\"text\" name=\"password\">", "Default Password"));
         }
         throw new ContinueAuthenticationException(authentication, "Continue" /* messages from service */ );
     }

@@ -1,4 +1,4 @@
-package com.ufp.security.core;
+package com.ufp.security.identity.core;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
