@@ -18,12 +18,11 @@ public class MockIdentityConsumer implements IdentityConsumer {
     public List<DisplayItem> beginConsumption(HttpServletRequest request, String username) throws IdentityConsumerException {
         List<DisplayItem> displayItems = new ArrayList<DisplayItem>();
         displayItems.add(new DisplayItem("Password", "<input type=\"text\" name=\"password\" id=\"AuthParam0\">", "Default Password"));
+        displayItems.add(new DisplayItem("Secret", "<input type=\"text\" name=\"secret\" id=\"AuthParam1\">", "SAW w/sms"));
         return displayItems;
     }
 
     public Object continueConsumption(HttpServletRequest request, String username, Map<String, String> responseMap) throws IdentityConsumerException {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-        grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_USER"));
-        return new IdentityAuthenticationToken(username, grantedAuthorities);
+        return new IdentityAuthenticationToken(username);
     }
 }
