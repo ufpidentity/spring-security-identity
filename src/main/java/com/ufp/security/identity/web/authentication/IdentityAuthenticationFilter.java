@@ -36,6 +36,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
     private boolean postOnly = true;
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
     private IdentityConsumer consumer;
+    private String furtherAuthenticationUrl;
 
     public IdentityAuthenticationFilter() {
         super("/j_spring_security_check");
@@ -59,30 +60,30 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
         String username = obtainUsername(request);
-        if (username == null) {
-            username = "";
-        }
-
         Authentication authentication = null;
         // Place the last username attempted into HttpSession for views
-        username = username.trim();
         HttpSession session = request.getSession(false);
 
-        String referer = request.getHeader("Referer");
-        logger.debug("found referer of " + referer);
-
         if (session != null || getAllowSessionCreation()) {
-            request.getSession().setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, TextEscapeUtils.escapeEntities(username));
-            if (request.getSession().getAttribute(IDENTITY_DISPLAY_ITEMS) == null) {
+            if (session == null)
+                session = request.getSession();
+            
+            if (username == null) 
+                username = session.getAttribute(SPRING_SECURITY_LAST_USERNAME_KEY).toString();
+            else 
+                session.setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, TextEscapeUtils.escapeEntities(username));
+
+            if (session.getAttribute(IDENTITY_DISPLAY_ITEMS) == null) {
                 try {
                     List<DisplayItem> displayItems = consumer.beginConsumption(request, username);
-                    request.getSession().setAttribute(IDENTITY_DISPLAY_ITEMS, displayItems);
-                    response.sendRedirect(referer); // go back to where we came from
+                    session.setAttribute(IDENTITY_DISPLAY_ITEMS, displayItems);
+                    response.sendRedirect(furtherAuthenticationUrl); 
                     return null;    // indicated to parent that authentication is continuing
                 } catch (IdentityConsumerException ice) {
                     throw new AuthenticationServiceException(ice.getMessage());
                 }
             } else {
+                session.removeAttribute(IDENTITY_DISPLAY_ITEMS);
                 try {
                     Object object = consumer.continueConsumption(request, username, request.getParameterMap());
                     if (object instanceof IdentityAuthenticationToken) {
@@ -91,7 +92,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
                         setDetails(request, token);
                         authentication = this.getAuthenticationManager().authenticate(token);
                     } else {
-                        request.getSession().setAttribute(IDENTITY_DISPLAY_ITEMS, object);
+                        session.setAttribute(IDENTITY_DISPLAY_ITEMS, object);
                     }
                 } catch (IdentityConsumerException ice) {
                     throw new AuthenticationServiceException(ice.getMessage());
@@ -107,7 +108,10 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
     }
 
     protected String obtainUsername(HttpServletRequest request) {
-        return request.getParameter(usernameParameter);
+        String name = request.getParameter(usernameParameter);
+        if (name != null) 
+            name = name.trim();
+        return name;
     }
 
     public void setPostOnly(boolean postOnly) {
@@ -117,5 +121,9 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
     public void setUsernameParameter(String usernameParameter) {
         Assert.hasText(usernameParameter, "Username parameter must not be empty or null");
         this.usernameParameter = usernameParameter;
+    }
+
+    public void setFurtherAuthenticationUrl(String furtherAuthenticationUrl) {
+        this.furtherAuthenticationUrl = furtherAuthenticationUrl;
     }
 }
