@@ -14,10 +14,7 @@ public class IdentityAuthenticationProvider implements AuthenticationProvider {
 
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         logger.debug("processing " + authentication);
-        if (authentication instanceof IdentityAuthenticationToken) {
-            ((IdentityAuthenticationToken)authentication).addDisplayItem(new DisplayItem("AuthParam0", "<input type=\"text\" name=\"password\">", "Default Password"));
-        }
-        throw new ContinueAuthenticationException(authentication, "Continue" /* messages from service */ );
+        return authentication;
     }
 
     public boolean supports(Class<? extends Object> authentication) {

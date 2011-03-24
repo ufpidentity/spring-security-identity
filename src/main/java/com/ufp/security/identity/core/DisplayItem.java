@@ -1,6 +1,9 @@
 package com.ufp.security.identity.core;
 
-public class DisplayItem {
+import java.io.Serializable;
+
+public class DisplayItem implements Serializable {
+    private static final long serialVersionUID = -1766676948426740271L;
     private String name;
     private String htmlInput;
     private String nickName;

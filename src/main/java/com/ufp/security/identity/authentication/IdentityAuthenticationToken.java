@@ -8,15 +8,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import com.ufp.security.identity.core.DisplayItem;
+import com.ufp.security.identity.core.IdentityAuthenticationStatus;
 
 public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
-    private List<DisplayItem> displayItems;
 
     public IdentityAuthenticationToken(Object principal) {
         super(null);
         this.principal = principal;
-        displayItems = new ArrayList<DisplayItem>();
         setAuthenticated(false);
     }
 
@@ -47,14 +46,6 @@ public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
         return null;
     }
     
-    public void addDisplayItem(DisplayItem displayItem) {
-        displayItems.add(displayItem);
-    }
-     
-    public void clearDisplayItems() {
-        displayItems.clear();
-    }
-
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException("Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
