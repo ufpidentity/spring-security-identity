@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.Assert;
 
-import com.ufp.security.identity.core.ContinueAuthenticationException;
 import com.ufp.security.identity.core.DisplayItem;
 
 public class IdentityAuthenticationProvider implements AuthenticationProvider, InitializingBean {
