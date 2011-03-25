@@ -6,9 +6,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
-
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 
 public class MockIdentityConsumer implements IdentityConsumer {
