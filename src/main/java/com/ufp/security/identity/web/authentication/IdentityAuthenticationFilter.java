@@ -24,9 +24,9 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 import com.ufp.security.identity.core.DisplayItem;
-import com.ufp.security.identity.core.IdentityConsumer;
-import com.ufp.security.identity.core.IdentityConsumerException;
-import com.ufp.security.identity.core.MockIdentityConsumer;
+import com.ufp.security.identity.service.IdentityService;
+import com.ufp.security.identity.service.IdentityServiceException;
+import com.ufp.security.identity.service.MockIdentityService;
 
 public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
@@ -35,7 +35,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private boolean postOnly = true;
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
-    private IdentityConsumer consumer;
+    private IdentityService service;
     private String furtherAuthenticationUrl;
 
     public IdentityAuthenticationFilter() {
@@ -45,10 +45,10 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
     @Override
     public void afterPropertiesSet() {
         super.afterPropertiesSet();
-        if (consumer == null) {
+        if (service == null) {
             try {
-                consumer = new MockIdentityConsumer();
-            } catch (IdentityConsumerException ice) {
+                service = new MockIdentityService();
+            } catch (IdentityServiceException ice) {
                 throw new IllegalArgumentException("Failed to initialize Identity", ice);
             }
         }
@@ -75,17 +75,17 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
 
             if (session.getAttribute(IDENTITY_DISPLAY_ITEMS) == null) {
                 try {
-                    List<DisplayItem> displayItems = consumer.beginConsumption(request, username);
+                    List<DisplayItem> displayItems = service.beginService(request, username);
                     session.setAttribute(IDENTITY_DISPLAY_ITEMS, displayItems);
                     response.sendRedirect(furtherAuthenticationUrl); 
                     return null;    // indicated to parent that authentication is continuing
-                } catch (IdentityConsumerException ice) {
+                } catch (IdentityServiceException ice) {
                     throw new AuthenticationServiceException(ice.getMessage());
                 }
             } else {
                 session.removeAttribute(IDENTITY_DISPLAY_ITEMS);
                 try {
-                    Object object = consumer.continueConsumption(request, username, request.getParameterMap());
+                    Object object = service.continueService(request, username, request.getParameterMap());
                     if (object instanceof IdentityAuthenticationToken) {
                         IdentityAuthenticationToken token = (IdentityAuthenticationToken)object;
                         // Allow subclasses to set the "details" property
@@ -94,7 +94,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
                     } else {
                         session.setAttribute(IDENTITY_DISPLAY_ITEMS, object);
                     }
-                } catch (IdentityConsumerException ice) {
+                } catch (IdentityServiceException ice) {
                     throw new AuthenticationServiceException(ice.getMessage());
                 }
             }

@@ -1,4 +1,4 @@
-package com.ufp.security.identity.consumer;
+package com.ufp.security.identity.service;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,7 @@ import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
  * &lt;/authentication_pretext&gt;
  * </pre>
  * <p>
- * An example of a pretext (may contain multiple display items and subsequent calls may return any number of pretexts
+ * An example of a pretext (may contain multiple display items and subsequent calls may return any number of pretexts (n.b. the <code>form_element</code> values are escaped so that they can be directly injected into a page for rendering)
  * <p>
  * <pre>
  * &lt;?xml version="1.0"?&gt;
@@ -26,7 +26,7 @@ import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
  *  &lt;result quality="0.0" level="3" message="OK"&gt;SUCCESS&lt;/result&gt;
  *  &lt;display_item name="secret"&gt;
  *    &lt;display_name&gt;Enter Secret&lt;/display_name&gt;
- *    &lt;form_element&gt;&lt;input id="AuthParam0"  type="text" name="secret" /&gt;&lt;/form_element&gt;
+ *    &lt;form_element&gt;&amp;lt;input id="AuthParam0"  type="text" name="secret" /&amp;gt;&lt;/form_element&gt;
  *    &lt;nickname&gt;saw (w/AIM)&lt;/nickname&gt;
  *  &lt;/display_item&gt;
  * &lt;/authentication_pretext&gt;
@@ -43,15 +43,15 @@ import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
  * </pre>
  */
 
-public class Identity4JConsumer implements IdentityConsumer {
-    public Identity4JConsumer() throws IdentityConsumerException {
+public class Identity4JService implements IdentityService {
+    public Identity4JService() throws IdentityServiceException {
     }
 
-    public List<DisplayItem> beginConsumption(HttpServletRequest request, String username) throws IdentityConsumerException {
+    public List<DisplayItem> beginService(HttpServletRequest request, String username) throws IdentityServiceException {
         return null;
     }
 
-    public Object continueConsumption(HttpServletRequest request, String username, Map<String, String> responseMap) throws IdentityConsumerException {
+    public Object continueService(HttpServletRequest request, String username, Map<String, String> responseMap) throws IdentityServiceException {
         return new IdentityAuthenticationToken(username);
     }
 }
