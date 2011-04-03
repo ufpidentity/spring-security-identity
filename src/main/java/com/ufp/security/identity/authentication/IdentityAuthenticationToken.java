@@ -25,7 +25,6 @@ public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
      * authentication token.
      *
      * @param principal
-     * @param credentials
      * @param authorities
      */
     public IdentityAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {

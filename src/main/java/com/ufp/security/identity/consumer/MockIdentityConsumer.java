@@ -1,4 +1,4 @@
-package com.ufp.security.identity.core;
+package com.ufp.security.identity.consumer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ufp.security.identity.core.DisplayItem;
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 
 public class MockIdentityConsumer implements IdentityConsumer {

@@ -1,4 +1,4 @@
-package com.ufp.security.identity.core;
+package com.ufp.security.identity.consumer;
 
 public class IdentityConsumerException extends Exception {
 }
