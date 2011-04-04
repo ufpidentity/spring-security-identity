@@ -3,8 +3,8 @@ package com.ufp.security.identity.service;
 import java.util.List;
 import java.util.Map;
 
-import com.ufp.security.identity.core.DisplayItem;
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
+import com.ufp.security.identity.provider.data.DisplayItem;
 
 import javax.servlet.http.HttpServletRequest;
 

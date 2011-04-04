@@ -5,8 +5,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ufp.security.identity.core.DisplayItem;
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
+import com.ufp.security.identity.provider.IdentityServiceProvider;
+import com.ufp.security.identity.provider.data.DisplayItem;
 
 /**
  * An example of a failure:
@@ -44,11 +45,20 @@ import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
  */
 
 public class Identity4JService implements IdentityService {
-    public Identity4JService() throws IdentityServiceException {
+    private IdentityServiceProvider identityServiceProvider;
+
+    public void afterPropertiesSet() {
+        if (identityServiceProvider == null) {
+            try {
+                identityServiceProvider = new IdentityServiceProvider();
+            } catch (IdentityServiceException identityServiceException) {
+                throw new IllegalArgumentException(identityServiceException.getMessage());
+            }
+        }
     }
 
     public List<DisplayItem> beginService(HttpServletRequest request, String username) throws IdentityServiceException {
-        return null;
+        return identityServiceProvider.preAuthenticate(username, request.getRemoteHost());
     }
 
     public Object continueService(HttpServletRequest request, String username, Map<String, String> responseMap) throws IdentityServiceException {

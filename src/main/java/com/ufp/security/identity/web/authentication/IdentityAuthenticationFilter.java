@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
-import com.ufp.security.identity.core.DisplayItem;
+import com.ufp.security.identity.provider.data.DisplayItem;
 import com.ufp.security.identity.service.IdentityService;
 import com.ufp.security.identity.service.IdentityServiceException;
 import com.ufp.security.identity.service.MockIdentityService;
