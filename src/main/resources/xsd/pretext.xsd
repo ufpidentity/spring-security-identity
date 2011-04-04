@@ -3,7 +3,7 @@
   <xs:element name="authentication_pretext">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="display_item"/>
+        <xs:element ref="display_item" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

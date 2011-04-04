@@ -1,20 +1,20 @@
 package com.ufp.security.identity.resolver;
 
-import java.net.URL;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
 public class  SimpleIdentityResolver implements IdentityResolver {
     private static Logger logger = Logger.getLogger(SimpleIdentityResolver.class);
 
-    public URL getNext() {
-        URL url = null;
+    public URI getNext() {
+        URI uri = null;
         try  {
-            url = new URL("https://identity.ufp.com:8443/identity-services");
-        } catch (MalformedURLException mue) {
-            logger.error(mue.getMessage(), mue);
+            uri = new URI("https://identity.ufp.com:8443/identity-services");
+        } catch (URISyntaxException use) {
+            logger.error(use.getMessage(), use);
         }
-        return url;
+        return uri;
     }
 }

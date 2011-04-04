@@ -1,7 +1,7 @@
 package com.ufp.security.identity.resolver;
 
-import java.net.URL;
+import java.net.URI;
 
 public interface IdentityResolver {
-    public URL getNext();
+    public URI getNext();
 }
