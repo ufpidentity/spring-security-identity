@@ -19,16 +19,18 @@ import com.ufp.security.identity.provider.data.DisplayItem;
 import com.ufp.security.identity.resolver.IdentityResolver;
 import com.ufp.security.identity.resolver.SimpleIdentityResolver;
 import com.ufp.security.identity.service.IdentityServiceException;
-import com.ufp.security.identity.truststore.LocalHostnameVerifier;
+import com.ufp.security.identity.truststore.IdentityHostnameVerifier;
 
 public class IdentityServiceProvider {
     private static Client client;
     private IdentityResolver identityResolver;
+    private HostnameVerifier hostnameVerifier;
 
     public void afterPropertiesSet() {
-        if (identityResolver == null) {
+        if (identityResolver == null)
             identityResolver = new SimpleIdentityResolver();
-        }
+        if (hostnameVerifier == null) 
+            hostnameVerifier = new IdentityHostnameVerifier();
     }
 
     public IdentityServiceProvider() throws IdentityServiceException {
@@ -36,7 +38,7 @@ public class IdentityServiceProvider {
             ClientConfig clientConfig = new DefaultClientConfig();
             SSLContext sslContext = SSLContext.getInstance("TLSv1");
             //sslContext.init(trustStore.getKeyManagerFactory().getKeyManagers(), trustManager.getTrustManagers(), null);
-            clientConfig.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(new LocalHostnameVerifier(), sslContext));
+            clientConfig.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hostnameVerifier, sslContext));
             client = Client.create(clientConfig);
         } catch (Exception e) {
             throw new IdentityServiceException(e.getMessage(), e);
@@ -54,6 +56,10 @@ public class IdentityServiceProvider {
     
     public void setIdentityResolver(IdentityResolver identityResolver) {
         this.identityResolver = identityResolver;
+    }
+
+    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
     }
 }
     
