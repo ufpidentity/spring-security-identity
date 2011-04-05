@@ -3,6 +3,7 @@ package com.ufp.security.identity.provider;
 import java.util.List;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.HostnameVerifier;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -18,13 +19,21 @@ import com.ufp.security.identity.provider.data.DisplayItem;
 
 import com.ufp.security.identity.resolver.IdentityResolver;
 import com.ufp.security.identity.resolver.SimpleIdentityResolver;
+
 import com.ufp.security.identity.service.IdentityServiceException;
+
 import com.ufp.security.identity.truststore.IdentityHostnameVerifier;
+import com.ufp.security.identity.truststore.KeyManagerFactoryBuilder;
+import com.ufp.security.identity.truststore.TrustManagerFactoryBuilder;
+
+import org.springframework.beans.factory.annotation.Required;
 
 public class IdentityServiceProvider {
     private static Client client;
     private IdentityResolver identityResolver;
     private HostnameVerifier hostnameVerifier;
+    private TrustManagerFactoryBuilder trustManagerFactoryBuilder;
+    private KeyManagerFactoryBuilder keyManagerFactoryBuilder;
 
     public void afterPropertiesSet() {
         if (identityResolver == null)
@@ -46,7 +55,7 @@ public class IdentityServiceProvider {
     }
 
     public List<DisplayItem> preAuthenticate(String name, String host) {
-        WebResource webResource = client.resource(identityResolver.getNext());
+        WebResource webResource = client.resource(identityResolver.getNext().resolve("preAuthenticate"));
         MultivaluedMap queryParams = new MultivaluedMapImpl();
         queryParams.add("name", name);
         queryParams.add("client_ip", host);
@@ -60,6 +69,16 @@ public class IdentityServiceProvider {
 
     public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = hostnameVerifier;
+    }
+
+    @Required
+    public void setTrustManagerFactoryBuilder(TrustManagerFactoryBuilder trustManagerFactoryBuilder) {
+        this.trustManagerFactoryBuilder = trustManagerFactoryBuilder;
+    }
+
+    @Required
+    public void setKeyManagerFactoryBuilder(KeyManagerFactoryBuilder keyManagerFactoryBuilder) {
+        this.keyManagerFactoryBuilder = keyManagerFactoryBuilder;
     }
 }
     

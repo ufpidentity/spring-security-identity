@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Required;
+
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 import com.ufp.security.identity.provider.IdentityServiceProvider;
 import com.ufp.security.identity.provider.data.DisplayItem;
@@ -47,21 +49,16 @@ import com.ufp.security.identity.provider.data.DisplayItem;
 public class Identity4JService implements IdentityService {
     private IdentityServiceProvider identityServiceProvider;
 
-    public void afterPropertiesSet() {
-        if (identityServiceProvider == null) {
-            try {
-                identityServiceProvider = new IdentityServiceProvider();
-            } catch (IdentityServiceException identityServiceException) {
-                throw new IllegalArgumentException(identityServiceException.getMessage());
-            }
-        }
-    }
-
     public List<DisplayItem> beginService(HttpServletRequest request, String username) throws IdentityServiceException {
         return identityServiceProvider.preAuthenticate(username, request.getRemoteHost());
     }
 
     public Object continueService(HttpServletRequest request, String username, Map<String, String> responseMap) throws IdentityServiceException {
         return new IdentityAuthenticationToken(username);
+    }
+    
+    @Required
+    public void setIdentityServiceProvider(IdentityServiceProvider identityServiceProvider) {
+        this.identityServiceProvider = identityServiceProvider;
     }
 }

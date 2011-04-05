@@ -11,7 +11,7 @@ public class  SimpleIdentityResolver implements IdentityResolver {
     public URI getNext() {
         URI uri = null;
         try  {
-            uri = new URI("https://identity.ufp.com:8443/identity-services");
+            uri = new URI("https://identity.ufp.com:8443/identity-services/");
         } catch (URISyntaxException use) {
             logger.error(use.getMessage(), use);
         }

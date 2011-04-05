@@ -35,7 +35,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private boolean postOnly = true;
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
-    private IdentityService service;
+    private IdentityService identityService;
     private String furtherAuthenticationUrl;
 
     public IdentityAuthenticationFilter() {
@@ -45,9 +45,9 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
     @Override
     public void afterPropertiesSet() {
         super.afterPropertiesSet();
-        if (service == null) {
+        if (identityService == null) {
             try {
-                service = new MockIdentityService();
+                identityService = new MockIdentityService();
             } catch (IdentityServiceException ice) {
                 throw new IllegalArgumentException("Failed to initialize Identity", ice);
             }
@@ -75,7 +75,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
 
             if (session.getAttribute(IDENTITY_DISPLAY_ITEMS) == null) {
                 try {
-                    List<DisplayItem> displayItems = service.beginService(request, username);
+                    List<DisplayItem> displayItems = identityService.beginService(request, username);
                     session.setAttribute(IDENTITY_DISPLAY_ITEMS, displayItems);
                     response.sendRedirect(furtherAuthenticationUrl); 
                     return null;    // indicated to parent that authentication is continuing
@@ -85,7 +85,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
             } else {
                 session.removeAttribute(IDENTITY_DISPLAY_ITEMS);
                 try {
-                    Object object = service.continueService(request, username, request.getParameterMap());
+                    Object object = identityService.continueService(request, username, request.getParameterMap());
                     if (object instanceof IdentityAuthenticationToken) {
                         IdentityAuthenticationToken token = (IdentityAuthenticationToken)object;
                         // Allow subclasses to set the "details" property
@@ -125,5 +125,9 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
 
     public void setFurtherAuthenticationUrl(String furtherAuthenticationUrl) {
         this.furtherAuthenticationUrl = furtherAuthenticationUrl;
+    }
+
+    public void setIdentityService(IdentityService identityService) {
+        this.identityService = identityService;
     }
 }
