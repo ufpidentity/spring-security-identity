@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.security.web.util.TextEscapeUtils;
 import org.springframework.util.Assert;
 
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -71,7 +70,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
             if (username == null) 
                 username = session.getAttribute(SPRING_SECURITY_LAST_USERNAME_KEY).toString();
             else 
-                session.setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, TextEscapeUtils.escapeEntities(username));
+                session.setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, username);
 
             if (session.getAttribute(IDENTITY_DISPLAY_ITEMS) == null) {
                 try {

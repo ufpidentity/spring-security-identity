@@ -27,8 +27,13 @@ import com.ufp.security.identity.truststore.KeyManagerFactoryBuilder;
 import com.ufp.security.identity.truststore.TrustManagerFactoryBuilder;
 
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.InitializingBean;
 
-public class IdentityServiceProvider {
+import org.apache.log4j.Logger;
+
+public class IdentityServiceProvider implements InitializingBean {
+    private static Logger logger = Logger.getLogger(IdentityServiceProvider.class);
+
     private static Client client;
     private IdentityResolver identityResolver;
     private HostnameVerifier hostnameVerifier;
@@ -40,26 +45,26 @@ public class IdentityServiceProvider {
             identityResolver = new SimpleIdentityResolver();
         if (hostnameVerifier == null) 
             hostnameVerifier = new IdentityHostnameVerifier();
-    }
-
-    public IdentityServiceProvider() throws IdentityServiceException {
         try {
             ClientConfig clientConfig = new DefaultClientConfig();
             SSLContext sslContext = SSLContext.getInstance("TLSv1");
-            //sslContext.init(trustStore.getKeyManagerFactory().getKeyManagers(), trustManager.getTrustManagers(), null);
+            sslContext.init(keyManagerFactoryBuilder.getKeyManagerFactory().getKeyManagers(), trustManagerFactoryBuilder.getTrustManagerFactory().getTrustManagers(), null);
             clientConfig.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hostnameVerifier, sslContext));
             client = Client.create(clientConfig);
         } catch (Exception e) {
-            throw new IdentityServiceException(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
 
-    public List<DisplayItem> preAuthenticate(String name, String host) {
-        WebResource webResource = client.resource(identityResolver.getNext().resolve("preAuthenticate"));
+    public List<DisplayItem> preAuthenticate(String name, String host) throws IdentityServiceException {
+        WebResource webResource = client.resource(identityResolver.getNext().resolve("preauthenticate"));
         MultivaluedMap queryParams = new MultivaluedMapImpl();
         queryParams.add("name", name);
         queryParams.add("client_ip", host);
         AuthenticationPretext authenticationPretext = webResource.queryParams(queryParams).get(AuthenticationPretext.class);
+        logger.debug("got result of " + authenticationPretext.getResult().getValue() + ", with message " + authenticationPretext.getResult().getMessage());
+        if (!authenticationPretext.getResult().getValue().equals("SUCCESS"))
+            throw new IdentityServiceException(authenticationPretext.getResult().getMessage());
         return authenticationPretext.getDisplayItem();
     }
     

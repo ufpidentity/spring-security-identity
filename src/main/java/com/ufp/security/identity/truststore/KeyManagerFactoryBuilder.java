@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 
 public class KeyManagerFactoryBuilder extends AbstractFactoryBuilder {
-    public KeyManagerFactory getKeyManagerFactoryInstance() throws Exception {
+    public KeyManagerFactory getKeyManagerFactory() throws Exception {
         char[] pass = passphrase.toCharArray();
  
 	// First initialize the key material.

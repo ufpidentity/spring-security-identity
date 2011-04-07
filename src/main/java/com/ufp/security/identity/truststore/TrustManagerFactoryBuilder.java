@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 
 public class TrustManagerFactoryBuilder extends AbstractFactoryBuilder {
-    public TrustManagerFactory getTrustManagerFactoryInstance() throws Exception {
+    public TrustManagerFactory getTrustManagerFactory() throws Exception {
 	char[] pass = passphrase.toCharArray();
 
 	// First initialize the trust material.
