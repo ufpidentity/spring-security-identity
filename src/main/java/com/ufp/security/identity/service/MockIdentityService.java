@@ -20,7 +20,7 @@ public class MockIdentityService implements IdentityService {
         return displayItems;
     }
 
-    public Object continueService(HttpServletRequest request, String username, Map<String, String> responseMap) throws IdentityServiceException {
+    public Object continueService(HttpServletRequest request, String username, Map<String, String[]> responseMap) throws IdentityServiceException {
         return new IdentityAuthenticationToken(username);
     }
 

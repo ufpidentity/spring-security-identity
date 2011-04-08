@@ -53,8 +53,12 @@ public class Identity4JService implements IdentityService {
         return identityServiceProvider.preAuthenticate(username, request.getRemoteHost());
     }
 
-    public Object continueService(HttpServletRequest request, String username, Map<String, String> responseMap) throws IdentityServiceException {
-        return new IdentityAuthenticationToken(username);
+    public Object continueService(HttpServletRequest request, String username, Map<String, String[]> responseMap) throws IdentityServiceException {
+        Object object = identityServiceProvider.authenticate(username, request.getRemoteHost(), responseMap);
+        
+        if (object instanceof String)
+            object = new IdentityAuthenticationToken((String)object);
+        return object;
     }
     
     @Required

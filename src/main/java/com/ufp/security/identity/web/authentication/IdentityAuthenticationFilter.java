@@ -92,6 +92,8 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
                         authentication = this.getAuthenticationManager().authenticate(token);
                     } else {
                         session.setAttribute(IDENTITY_DISPLAY_ITEMS, object);
+                        response.sendRedirect(furtherAuthenticationUrl);
+                        return null;
                     }
                 } catch (IdentityServiceException ice) {
                     throw new AuthenticationServiceException(ice.getMessage());

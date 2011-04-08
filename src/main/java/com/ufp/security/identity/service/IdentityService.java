@@ -29,5 +29,5 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface IdentityService {
     public List<DisplayItem> beginService(HttpServletRequest request, String username) throws IdentityServiceException;
-    public Object continueService(HttpServletRequest request, String username, Map<String, String> responseMap) throws IdentityServiceException;
+    public Object continueService(HttpServletRequest request, String username, Map<String, String[]> responseMap) throws IdentityServiceException;
 }
