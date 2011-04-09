@@ -26,7 +26,7 @@ import com.ufp.security.identity.provider.data.DisplayItem;
 import com.ufp.security.identity.provider.data.Result;
 
 import com.ufp.security.identity.resolver.IdentityResolver;
-import com.ufp.security.identity.resolver.SimpleIdentityResolver;
+import com.ufp.security.identity.resolver.StaticIdentityResolver;
 
 import com.ufp.security.identity.service.IdentityServiceException;
 
@@ -55,7 +55,7 @@ public class IdentityServiceProvider implements InitializingBean {
      */
     public void afterPropertiesSet() {
         if (identityResolver == null)
-            identityResolver = new SimpleIdentityResolver();
+            identityResolver = new StaticIdentityResolver();
         if (hostnameVerifier == null) 
             hostnameVerifier = new IdentityHostnameVerifier();
         try {
