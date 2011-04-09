@@ -48,6 +48,11 @@ public class IdentityServiceProvider implements InitializingBean {
     private TrustManagerFactoryBuilder trustManagerFactoryBuilder;
     private KeyManagerFactoryBuilder keyManagerFactoryBuilder;
 
+    /**
+     * Handle default injection if nothing was explicitly set
+     * 
+     * @pad.exclude
+     */
     public void afterPropertiesSet() {
         if (identityResolver == null)
             identityResolver = new SimpleIdentityResolver();

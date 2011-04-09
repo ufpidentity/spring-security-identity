@@ -5,6 +5,10 @@ import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
+/**
+ * An {@link IdentityResolver} that returns the service running locally (localhost). For development/testing only
+ * @pad.exclude
+ */
 public class  LocalhostIdentityResolver implements IdentityResolver {
     private static Logger logger = Logger.getLogger(LocalhostIdentityResolver.class);
 

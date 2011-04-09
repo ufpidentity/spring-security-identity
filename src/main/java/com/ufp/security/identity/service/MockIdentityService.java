@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 import com.ufp.security.identity.provider.data.DisplayItem;
 
+/** 
+ * A mock service for testing only 
+ * @pad.exclude
+ */
 public class MockIdentityService implements IdentityService {
     public MockIdentityService() throws IdentityServiceException {
     }
