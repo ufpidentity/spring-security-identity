@@ -12,6 +12,9 @@ import org.springframework.util.Assert;
 public class IdentityAuthenticationProvider implements AuthenticationProvider, InitializingBean {
     private UserDetailsService userDetailsService;
 
+    /** 
+     * @pad.exclude
+     */
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(this.userDetailsService, "The userDetailsService must be set");
     }

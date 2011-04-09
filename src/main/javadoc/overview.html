@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Spring Security Identity Overview</title>
+</head>
+<body>
+Provides the classes and methods necessary for Identity authentication integrated with Spring Security.
+
+A sample configuration for Spring Security requires several beans to be configured as documented. 
+<pre>
+  &lt;custom-filter position=&quot;FORM_LOGIN_FILTER&quot; ref=&quot;identityAuthenticationFilter&quot; /&gt;
+
+  &lt;authentication-manager alias=&quot;authenticationManager&quot;&gt;
+    &lt;authentication-provider ref=&quot;identityProvider&quot;/&gt;
+  &lt;/authentication-manager&gt;
+
+  &lt;user-service id=&quot;userService&quot;&gt;
+    &lt;user name=&quot;bob@example.com&quot; authorities=&quot;ROLE_USER&quot; /&gt;
+    &lt;user name=&quot;alice@example.com&quot; authorities=&quot;ROLE_SUPERVISOR&quot; /&gt;
+  &lt;/user-service&gt;
+
+  &lt;beans:bean name=&quot;identityProvider&quot; class=&quot;com.ufp.security.identity.authentication.IdentityAuthenticationProvider&quot;&gt;
+    &lt;beans:property name=&quot;userDetailsService&quot; ref=&quot;userService&quot;/&gt;
+  &lt;/beans:bean&gt;
+
+  &lt;beans:bean name=&quot;identityAuthenticationFilter&quot; class=&quot;com.ufp.security.identity.web.authentication.IdentityAuthenticationFilter&quot;&gt;
+    &lt;beans:property name=&quot;authenticationManager&quot; ref=&quot;authenticationManager&quot;/&gt;
+    &lt;beans:property name=&quot;authenticationFailureHandler&quot; ref=&quot;defaultFailureHandler&quot;/&gt;
+    &lt;beans:property name=&quot;furtherAuthenticationUrl&quot; value=&quot;login.jsp&quot;/&gt;
+    &lt;beans:property name=&quot;identityService&quot; ref=&quot;identityService&quot;/&gt;
+  &lt;/beans:bean&gt;
+
+  &lt;beans:bean name=&quot;identityService&quot; class=&quot;com.ufp.security.identity.service.Identity4JService&quot;&gt;
+    &lt;beans:property name=&quot;identityServiceProvider&quot; ref=&quot;identityServiceProvider&quot;/&gt;
+  &lt;/beans:bean&gt;
+
+  &lt;beans:bean id=&quot;identityServiceProvider&quot; class=&quot;com.ufp.security.identity.provider.IdentityServiceProvider&quot;&gt;
+    &lt;beans:property name=&quot;keyManagerFactoryBuilder&quot; ref=&quot;keyManagerFactoryBuilder&quot;/&gt;
+    &lt;beans:property name=&quot;trustManagerFactoryBuilder&quot; ref=&quot;trustManagerFactoryBuilder&quot;/&gt;
+    &lt;beans:property name=&quot;hostnameVerifier&quot; ref=&quot;hostnameVerifier&quot;/&gt;
+    &lt;beans:property name=&quot;identityResolver&quot; ref=&quot;localhostResolver&quot;/&gt;
+  &lt;/beans:bean&gt;
+
+  &lt;beans:bean name=&quot;hostnameVerifier&quot; class=&quot;com.ufp.security.identity.truststore.IdentityHostnameVerifier&quot;/&gt;
+
+  &lt;beans:bean name=&quot;localhostResolver&quot; class=&quot;com.ufp.security.identity.resolver.StaticIdentityResolver&quot;/&gt;
+
+  &lt;beans:bean name=&quot;keyManagerFactoryBuilder&quot; class=&quot;com.ufp.security.identity.truststore.KeyManagerFactoryBuilder&quot;&gt;
+    &lt;beans:property name=&quot;store&quot; value=&quot;classpath:store/example.com.p12&quot;/&gt;
+    &lt;beans:property name=&quot;passphrase&quot; value=&quot;${client.passphrase}&quot;/&gt;
+  &lt;/beans:bean&gt;
+
+  &lt;beans:bean name=&quot;trustManagerFactoryBuilder&quot; class=&quot;com.ufp.security.identity.truststore.TrustManagerFactoryBuilder&quot;&gt;
+    &lt;beans:property name=&quot;store&quot; value=&quot;classpath:store/truststore.jks&quot;/&gt;
+    &lt;beans:property name=&quot;passphrase&quot; value=&quot;${truststore.passphrase}&quot;/&gt;
+  &lt;/beans:bean&gt;
+</pre>
+</body>
+</html>

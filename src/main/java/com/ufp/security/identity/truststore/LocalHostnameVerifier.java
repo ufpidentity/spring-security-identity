@@ -5,6 +5,11 @@ import javax.net.ssl.SSLSession;
 
 import org.apache.log4j.Logger;
 
+/**
+ * A {@link HostnameVerifier} that verifies host {@link #startsWith(String)} &quot;localhost.&quot; For development/testing only
+ * 
+ * @pad.exclude
+ */
 public class LocalHostnameVerifier implements HostnameVerifier {
     private static Logger logger = Logger.getLogger(LocalHostnameVerifier.class);
 
