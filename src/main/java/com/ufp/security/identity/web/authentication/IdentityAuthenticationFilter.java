@@ -23,9 +23,9 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 import com.ufp.security.identity.provider.data.DisplayItem;
-import com.ufp.security.identity.service.IdentityService;
+import com.ufp.security.identity.service.IdentityServiceBridge;
 import com.ufp.security.identity.service.IdentityServiceException;
-import com.ufp.security.identity.service.MockIdentityService;
+import com.ufp.security.identity.service.MockIdentityServiceBridge;
 
 public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
@@ -34,19 +34,22 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private boolean postOnly = true;
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
-    private IdentityService identityService;
+    private IdentityServiceBridge identityServiceBridge;
     private String furtherAuthenticationUrl;
 
     public IdentityAuthenticationFilter() {
         super("/j_spring_security_check");
     }
 
+    /** 
+     * @pad.exclude
+     */
     @Override
     public void afterPropertiesSet() {
         super.afterPropertiesSet();
-        if (identityService == null) {
+        if (identityServiceBridge == null) {
             try {
-                identityService = new MockIdentityService();
+                identityServiceBridge = new MockIdentityServiceBridge();
             } catch (IdentityServiceException ice) {
                 throw new IllegalArgumentException("Failed to initialize Identity", ice);
             }
@@ -74,7 +77,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
 
             if (session.getAttribute(IDENTITY_DISPLAY_ITEMS) == null) {
                 try {
-                    List<DisplayItem> displayItems = identityService.beginService(request, username);
+                    List<DisplayItem> displayItems = identityServiceBridge.preAuthenticate(request, username);
                     session.setAttribute(IDENTITY_DISPLAY_ITEMS, displayItems);
                     response.sendRedirect(furtherAuthenticationUrl); 
                     return null;    // indicated to parent that authentication is continuing
@@ -84,7 +87,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
             } else {
                 session.removeAttribute(IDENTITY_DISPLAY_ITEMS);
                 try {
-                    Object object = identityService.continueService(request, username, request.getParameterMap());
+                    Object object = identityServiceBridge.authenticate(request, username, request.getParameterMap());
                     if (object instanceof IdentityAuthenticationToken) {
                         IdentityAuthenticationToken token = (IdentityAuthenticationToken)object;
                         // Allow subclasses to set the "details" property
@@ -128,7 +131,7 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
         this.furtherAuthenticationUrl = furtherAuthenticationUrl;
     }
 
-    public void setIdentityService(IdentityService identityService) {
-        this.identityService = identityService;
+    public void setIdentityServiceBridge(IdentityServiceBridge identityServiceBridge) {
+        this.identityServiceBridge = identityServiceBridge;
     }
 }

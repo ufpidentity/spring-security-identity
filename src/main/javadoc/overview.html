@@ -28,10 +28,10 @@ A sample configuration for Spring Security requires several beans to be configur
     &lt;beans:property name=&quot;authenticationManager&quot; ref=&quot;authenticationManager&quot;/&gt;
     &lt;beans:property name=&quot;authenticationFailureHandler&quot; ref=&quot;defaultFailureHandler&quot;/&gt;
     &lt;beans:property name=&quot;furtherAuthenticationUrl&quot; value=&quot;login.jsp&quot;/&gt;
-    &lt;beans:property name=&quot;identityService&quot; ref=&quot;identityService&quot;/&gt;
+    &lt;beans:property name=&quot;identityServiceBridge&quot; ref=&quot;identityServiceBridge&quot;/&gt;
   &lt;/beans:bean&gt;
 
-  &lt;beans:bean name=&quot;identityService&quot; class=&quot;com.ufp.security.identity.service.Identity4JService&quot;&gt;
+  &lt;beans:bean name=&quot;identityServiceBridge&quot; class=&quot;com.ufp.security.identity.service.Identity4JServiceBridge&quot;&gt;
     &lt;beans:property name=&quot;identityServiceProvider&quot; ref=&quot;identityServiceProvider&quot;/&gt;
   &lt;/beans:bean&gt;
 

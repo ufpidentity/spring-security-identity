@@ -69,14 +69,14 @@ public class IdentityServiceProvider implements InitializingBean {
         }
     }
 
-    public List<DisplayItem> preAuthenticate(String name, String host) throws IdentityServiceException {
+    public AuthenticationPretext preAuthenticate(String name, String host) throws IdentityServiceException {
         WebResource webResource = client.resource(identityResolver.getNext().resolve("preauthenticate"));
         MultivaluedMap queryParams = new MultivaluedMapImpl();
         queryParams.add("name", name);
         queryParams.add("client_ip", host);
         AuthenticationPretext authenticationPretext = webResource.queryParams(queryParams).get(AuthenticationPretext.class);
         logger.debug("got result of " + authenticationPretext.getResult().getValue() + ", with message " + authenticationPretext.getResult().getMessage());
-        return handleAuthenticationPretext(authenticationPretext);
+        return authenticationPretext;
     }
 
     public Object authenticate(String name, String host, Map<String, String[]> responseParams) throws IdentityServiceException {
@@ -97,13 +97,7 @@ public class IdentityServiceProvider implements InitializingBean {
         ClientResponse clientResponse = webResource.queryParams(queryParams).get(ClientResponse.class);
         if (clientResponse.getClientResponseStatus().equals(ClientResponse.Status.OK)) {
             try {
-                Object response = handleClientResponse(clientResponse);
-                if (response instanceof AuthenticationPretext)
-                    r = handleAuthenticationPretext((AuthenticationPretext)response);
-                else if (response instanceof AuthenticationContext)
-                    r = handleAuthenticationContext((AuthenticationContext)response);
-                else
-                    logger.error("unknown response object: " + response.toString());
+                r = handleClientResponse(clientResponse);
             } catch (Exception e) {
                 logger.error(e.getMessage());
                 throw new IdentityServiceException(e.getMessage(), e);
@@ -113,22 +107,6 @@ public class IdentityServiceProvider implements InitializingBean {
         return r;
     }
 
-    private String handleAuthenticationContext(AuthenticationContext authenticationContext) throws IdentityServiceException {
-        Result result = authenticationContext.getResult();
-        logger.debug("handling a context with result " + result.getValue() + " and message " + result.getMessage());
-        if (!result.getValue().equals("SUCCESS"))
-            throw new IdentityServiceException(result.getMessage());
-        logger.debug("returning name " + authenticationContext.getName());
-        return authenticationContext.getName();
-    }
-            
-    private List<DisplayItem> handleAuthenticationPretext(AuthenticationPretext authenticationPretext) throws IdentityServiceException {
-        Result result = authenticationPretext.getResult();
-        logger.debug("handling a pretext with " + authenticationPretext.getDisplayItem().size() + " elements, result of " + result.getValue() + " and message of " + result.getMessage());
-        if (!result.getValue().equals("SUCCESS") && !result.getValue().equals("CONTINUE"))
-            throw new IdentityServiceException(result.getMessage());
-        return authenticationPretext.getDisplayItem();
-    }
         
     private Object handleClientResponse(ClientResponse clientResponse) throws Exception {
         JAXBContext jaxbContext = JAXBContext.newInstance(AuthenticationPretext.class, AuthenticationContext.class);
