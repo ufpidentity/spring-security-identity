@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * <p>Methods to bridge Spring Security auithentication to an Identity
  * authentication. A bridge implementation will typically have an
- * {@link IdentityServiceProvider} to perform the actual
+ * {@link com.ufp.security.identity.provider.IdentityServiceProvider} to perform the actual
  * authentication with the Identity service. Initially a context is
  * setup for a user id which is fully qualified along with the domain
  * requesting authentication on behalf of the user.
