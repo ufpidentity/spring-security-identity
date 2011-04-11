@@ -1,7 +1,7 @@
 package com.ufp.security.identity.authentication;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -9,10 +9,12 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
+    private Map<String, String> attributes;
 
     public IdentityAuthenticationToken(Object principal) {
         super(null);
         this.principal = principal;
+        attributes = new HashMap<String, String>();
         setAuthenticated(false);
     }
 
@@ -47,5 +49,13 @@ public class IdentityAuthenticationToken extends AbstractAuthenticationToken {
             throw new IllegalArgumentException("Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
         }
         super.setAuthenticated(false);
+    }
+
+    public void setAttribute(String key, String value) {
+        attributes.put(key, value);
+    }
+
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 }
