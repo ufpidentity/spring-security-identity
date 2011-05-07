@@ -12,6 +12,7 @@
     <spring-security-version>3.0.5.RELEASE</spring-security-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jersey.version>1.6</jersey.version>
+    <identity4j.version>1.0-SNAPSHOT</identity4j.version>
   </properties>
 
   <repositories>
@@ -54,7 +55,13 @@
       <artifactId>jersey-client</artifactId>
       <version>${jersey.version}</version>
     </dependency>
-    
+
+    <dependency>
+      <groupId>com.ufp</groupId>
+      <artifactId>identity4j</artifactId>
+      <version>${identity4j.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -100,24 +107,6 @@
           </links>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jaxb2-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>xjc</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <schemaDirectory>${basedir}/src/main/resources/xsd</schemaDirectory>
-          <packageName>com.ufp.security.identity.provider.data</packageName> <!-- The name of your generated source package -->
-          <outputDirectory>${basedir}/src/main/generated-source</outputDirectory>
-        </configuration>
-      </plugin>
-
     </plugins>
   </build>
 </project>

@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
-import com.ufp.security.identity.provider.data.DisplayItem;
+
+import com.ufp.identity4j.service.IdentityServiceException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +32,6 @@ import javax.servlet.http.HttpServletRequest;
  * indicating a successful authentication occured.
  */
 public interface IdentityServiceBridge {
-    public List<DisplayItem> preAuthenticate(HttpServletRequest request, String username) throws IdentityServiceException;
+    public UserDisplay preAuthenticate(HttpServletRequest request, String username) throws IdentityServiceException;
     public Object authenticate(HttpServletRequest request, String username, Map<String, String[]> responseMap) throws IdentityServiceException;
 }

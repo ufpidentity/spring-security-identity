@@ -22,10 +22,13 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
-import com.ufp.security.identity.provider.data.DisplayItem;
+
 import com.ufp.security.identity.service.IdentityServiceBridge;
-import com.ufp.security.identity.service.IdentityServiceException;
 import com.ufp.security.identity.service.MockIdentityServiceBridge;
+import com.ufp.security.identity.service.UserDisplay;
+
+import com.ufp.identity4j.data.DisplayItem;
+import com.ufp.identity4j.service.IdentityServiceException;
 
 public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
@@ -70,31 +73,35 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
             if (session == null)
                 session = request.getSession();
             
-            if (username == null) 
-                username = session.getAttribute(SPRING_SECURITY_LAST_USERNAME_KEY).toString();
-            else 
-                session.setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, username);
+            if (username == null) {
+                Object attribute = session.getAttribute(SPRING_SECURITY_LAST_USERNAME_KEY);
+                if (attribute != null) 
+                    username = attribute.toString(); 
+            } 
 
             if (session.getAttribute(IDENTITY_DISPLAY_ITEMS) == null) {
                 try {
-                    List<DisplayItem> displayItems = identityServiceBridge.preAuthenticate(request, username);
-                    session.setAttribute(IDENTITY_DISPLAY_ITEMS, displayItems);
+                    UserDisplay userDisplay = identityServiceBridge.preAuthenticate(request, username);
+                    session.setAttribute(IDENTITY_DISPLAY_ITEMS, userDisplay.getDisplayItems());
+                    session.setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, userDisplay.getUsername());
                     response.sendRedirect(furtherAuthenticationUrl); 
                     return null;    // indicated to parent that authentication is continuing
                 } catch (IdentityServiceException ice) {
                     throw new AuthenticationServiceException(ice.getMessage());
                 }
             } else {
-                session.removeAttribute(IDENTITY_DISPLAY_ITEMS);
                 try {
                     Object object = identityServiceBridge.authenticate(request, username, request.getParameterMap());
                     if (object instanceof IdentityAuthenticationToken) {
+                        session.removeAttribute(IDENTITY_DISPLAY_ITEMS);
                         IdentityAuthenticationToken token = (IdentityAuthenticationToken)object;
                         // Allow subclasses to set the "details" property
                         setDetails(request, token);
                         authentication = this.getAuthenticationManager().authenticate(token);
-                    } else {
-                        session.setAttribute(IDENTITY_DISPLAY_ITEMS, object);
+                    } else if (object instanceof UserDisplay) {
+                        UserDisplay userDisplay = (UserDisplay)object;
+                        session.setAttribute(IDENTITY_DISPLAY_ITEMS, userDisplay.getDisplayItems());
+                        session.setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, userDisplay.getUsername());
                         response.sendRedirect(furtherAuthenticationUrl);
                         return null;
                     }

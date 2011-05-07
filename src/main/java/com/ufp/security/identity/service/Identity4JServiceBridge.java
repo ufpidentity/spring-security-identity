@@ -8,13 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Required;
 
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
-import com.ufp.security.identity.provider.IdentityServiceProvider;
-import com.ufp.security.identity.provider.IdentityServiceProvider;
 
-import com.ufp.security.identity.provider.data.AuthenticationContext;
-import com.ufp.security.identity.provider.data.AuthenticationPretext;
-import com.ufp.security.identity.provider.data.DisplayItem;
-import com.ufp.security.identity.provider.data.Result;
+import com.ufp.identity4j.data.AuthenticationContext;
+import com.ufp.identity4j.data.AuthenticationPretext;
+import com.ufp.identity4j.data.DisplayItem;
+import com.ufp.identity4j.data.Result;
+
+import com.ufp.identity4j.provider.IdentityServiceProvider;
+import com.ufp.identity4j.service.IdentityServiceException;
 
 import org.apache.log4j.Logger;
 
@@ -33,13 +34,13 @@ public class Identity4JServiceBridge implements IdentityServiceBridge {
     public static final String IDENTITY_DISPLAY_MESSAGE = "IDENTITY_DISPLAY_MESSAGE";
     private IdentityServiceProvider identityServiceProvider;
 
-    public List<DisplayItem> preAuthenticate(HttpServletRequest request, String username) throws IdentityServiceException {
+    public UserDisplay preAuthenticate(HttpServletRequest request, String username) throws IdentityServiceException {
         AuthenticationPretext authenticationPretext = identityServiceProvider.preAuthenticate(username, request.getRemoteHost());
         Result result = authenticationPretext.getResult();
         logger.debug("handling a pretext with " + authenticationPretext.getDisplayItem().size() + " elements, result of " + result.getValue() + " and message of " + result.getMessage());
         if (!result.getValue().equals("SUCCESS") && !result.getValue().equals("CONTINUE"))
             throw new IdentityServiceException(result.getMessage());
-        return authenticationPretext.getDisplayItem();
+        return new UserDisplay(authenticationPretext.getName(), authenticationPretext.getDisplayItem());
     }
 
     public Object authenticate(HttpServletRequest request, String username, Map<String, String[]> responseMap) throws IdentityServiceException {
@@ -72,12 +73,12 @@ public class Identity4JServiceBridge implements IdentityServiceBridge {
         return new IdentityAuthenticationToken(authenticationContext.getName());
     }
             
-    private List<DisplayItem> handleAuthenticationPretext(AuthenticationPretext authenticationPretext) throws IdentityServiceException {
+    private UserDisplay handleAuthenticationPretext(AuthenticationPretext authenticationPretext) throws IdentityServiceException {
         Result result = authenticationPretext.getResult();
         logger.debug("handling a pretext with " + authenticationPretext.getDisplayItem().size() + " elements, result of " + result.getValue() + " and message of " + result.getMessage());
         if (!result.getValue().equals("SUCCESS") && !result.getValue().equals("CONTINUE"))
             throw new IdentityServiceException(result.getMessage());
-        return authenticationPretext.getDisplayItem();
+        return new UserDisplay(authenticationPretext.getName(), authenticationPretext.getDisplayItem());
     }
     
     @Required
