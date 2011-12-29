@@ -106,6 +106,10 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
                         return null;
                     }
                 } catch (IdentityServiceException ice) {
+                    if (ice.getResult().getValue().equals("RESET")) {
+                        session.removeAttribute(IDENTITY_DISPLAY_ITEMS);
+                        session.removeAttribute(SPRING_SECURITY_LAST_USERNAME_KEY);
+                    }
                     throw new AuthenticationServiceException(ice.getMessage());
                 }
             }
