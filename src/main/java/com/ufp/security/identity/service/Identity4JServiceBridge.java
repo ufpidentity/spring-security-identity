@@ -39,7 +39,7 @@ public class Identity4JServiceBridge implements IdentityServiceBridge {
         Result result = authenticationPretext.getResult();
         logger.debug("handling a pretext with " + authenticationPretext.getDisplayItem().size() + " elements, result of " + result.getValue() + " and message of " + result.getMessage());
         if (!result.getValue().equals("SUCCESS") && !result.getValue().equals("CONTINUE"))
-            throw new IdentityServiceException(result.getMessage());
+            throw new IdentityServiceException(result);
         return new UserDisplay(authenticationPretext.getName(), authenticationPretext.getDisplayItem());
     }
 
@@ -68,7 +68,7 @@ public class Identity4JServiceBridge implements IdentityServiceBridge {
         Result result = authenticationContext.getResult();
         logger.debug("handling a context with result " + result.getValue() + " and message " + result.getMessage());
         if (!result.getValue().equals("SUCCESS"))
-            throw new IdentityServiceException(result.getMessage());
+            throw new IdentityServiceException(result);
         logger.debug("returning name " + authenticationContext.getName());
         return new IdentityAuthenticationToken(authenticationContext.getName());
     }
@@ -77,7 +77,7 @@ public class Identity4JServiceBridge implements IdentityServiceBridge {
         Result result = authenticationPretext.getResult();
         logger.debug("handling a pretext with " + authenticationPretext.getDisplayItem().size() + " elements, result of " + result.getValue() + " and message of " + result.getMessage());
         if (!result.getValue().equals("SUCCESS") && !result.getValue().equals("CONTINUE"))
-            throw new IdentityServiceException(result.getMessage());
+            throw new IdentityServiceException(result);
         return new UserDisplay(authenticationPretext.getName(), authenticationPretext.getDisplayItem());
     }
     
