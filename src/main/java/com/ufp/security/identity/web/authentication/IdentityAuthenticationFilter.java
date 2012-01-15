@@ -24,7 +24,6 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 
 import com.ufp.security.identity.service.IdentityServiceBridge;
-import com.ufp.security.identity.service.MockIdentityServiceBridge;
 import com.ufp.security.identity.service.UserDisplay;
 
 import com.ufp.identity4j.data.DisplayItem;
@@ -42,21 +41,6 @@ public class IdentityAuthenticationFilter extends AbstractAuthenticationProcessi
 
     public IdentityAuthenticationFilter() {
         super("/j_spring_security_check");
-    }
-
-    /** 
-     * @pad.exclude
-     */
-    @Override
-    public void afterPropertiesSet() {
-        super.afterPropertiesSet();
-        if (identityServiceBridge == null) {
-            try {
-                identityServiceBridge = new MockIdentityServiceBridge();
-            } catch (IdentityServiceException ice) {
-                throw new IllegalArgumentException("Failed to initialize Identity", ice);
-            }
-        }
     }
 
     @Override
