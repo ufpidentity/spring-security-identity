@@ -11,7 +11,6 @@ import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
 
 import com.ufp.identity4j.data.AuthenticationContext;
 import com.ufp.identity4j.data.AuthenticationPretext;
-import com.ufp.identity4j.data.DisplayItem;
 import com.ufp.identity4j.data.Result;
 
 import com.ufp.identity4j.provider.IdentityServiceProvider;
@@ -20,9 +19,9 @@ import com.ufp.identity4j.service.IdentityServiceException;
 import org.apache.log4j.Logger;
 
 /**
- * The Bridge implementation betweeen Spring Security and Identity4J. 
+ * The Bridge implementation betweeen Spring Security and Identity4j. 
  *
- * Identity4J talks directly to the Identity service and returns data
+ * Identity4j talks directly to the ufpIdentity service and returns data
  * objects specifically related to the service. It is up to the Bridge
  * implementation to translate the data objects returned by the
  * service, into data objects necessary for a login implementation
