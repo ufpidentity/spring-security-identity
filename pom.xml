@@ -63,12 +63,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-client</artifactId>
-      <version>${jersey.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.ufp</groupId>
       <artifactId>identity4j</artifactId>
       <version>${identity4j.version}</version>
