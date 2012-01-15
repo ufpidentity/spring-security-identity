@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+- Sample namespace-based configuration
+-
+-->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                                 http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+  <global-method-security pre-post-annotations="enabled">
+    <!-- AspectJ pointcut expression that locates our "post" method and applies security that way
+         <protect-pointcut expression="execution(* bigbank.*Service.post*(..))" access="ROLE_TELLER"/>
+    -->
+  </global-method-security>
+
+  <http use-expressions="true" entry-point-ref="defaultEntryPoint">
+    <intercept-url pattern="/secure/extreme/**" access="hasRole('ROLE_SUPERVISOR')"/>
+    <intercept-url pattern="/secure/**" access="isAuthenticated()" />
+    <!-- Disable web URI authorization, as we're using <global-method-security> and have @Secured the services layer instead
+         <intercept-url pattern="/listAccounts.html" access="isRememberMe()" />
+         <intercept-url pattern="/post.html" access="hasRole('ROLE_TELLER')" />
+    -->
+    <intercept-url pattern="/**" access="permitAll" />
+    <custom-filter position="FORM_LOGIN_FILTER" ref="identityAuthenticationFilter" />
+
+    <logout />
+    <!--
+        Uncomment to enable X509 client authentication support
+        <x509 />
+    -->
+    <!-- Uncomment to limit the number of sessions a user can have -->
+    <session-management session-authentication-strategy-ref="sessionAuthenticationStrategy"/>
+  </http>
+
+  <authentication-manager alias="authenticationManager">
+    <authentication-provider ref="identityProvider"/>
+  </authentication-manager>
+
+  <beans:bean id="guestUserDetailsService" class="bigbank.GuestUserDetailsService"/>
+
+  <beans:bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
+    <beans:property name="sessionRegistry" ref="sessionRegistry" />
+    <beans:property name="expiredUrl" value="/timeout.jsp" />
+  </beans:bean>
+
+  <beans:bean id="sessionAuthenticationStrategy" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+    <beans:constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+    <beans:property name="maximumSessions" value="1" />
+  </beans:bean>
+
+  <beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+  <beans:bean name="defaultFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+    <beans:property name="defaultFailureUrl" value="/login.jsp?login_message=true"/>
+  </beans:bean>
+
+  <beans:bean name="defaultEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+    <beans:property name="loginFormUrl" value="/login.jsp"/>
+  </beans:bean>
+
+  <beans:bean name="identityProvider" class="com.ufp.security.identity.authentication.IdentityAuthenticationProvider">
+    <beans:property name="userDetailsService" ref="guestUserDetailsService"/>
+  </beans:bean>
+
+  <beans:bean name="identityAuthenticationFilter" class="com.ufp.security.identity.web.authentication.IdentityAuthenticationFilter">
+    <beans:property name="authenticationManager" ref="authenticationManager"/>
+    <beans:property name="authenticationFailureHandler" ref="defaultFailureHandler"/>
+    <beans:property name="furtherAuthenticationUrl" value="login.jsp"/>
+    <beans:property name="identityServiceBridge" ref="identityServiceBridge"/>
+    <beans:property name="sessionAuthenticationStrategy" ref="sessionAuthenticationStrategy"/>
+  </beans:bean>
+
+  <beans:bean name="identityServiceBridge" class="com.ufp.security.identity.service.Identity4JServiceBridge">
+    <beans:property name="identityServiceProvider" ref="identityServiceProvider"/>
+  </beans:bean>
+
+  <beans:bean id="identityServiceProvider" class="com.ufp.identity4j.provider.IdentityServiceProvider" init-method="afterPropertiesSet">
+    <beans:property name="keyManagerFactoryBuilder" ref="keyManagerFactoryBuilder"/>
+    <beans:property name="trustManagerFactoryBuilder" ref="trustManagerFactoryBuilder"/>
+    <beans:property name="identityResolver" ref="localhostResolver"/>
+  </beans:bean>
+
+  <beans:bean name="localhostResolver" class="com.ufp.identity4j.resolver.StaticIdentityResolver">
+    <beans:property name="uriString" value="https://staging.ufp.com:8443/identity-services/services/"/>
+  </beans:bean>
+
+  <beans:bean name="keyManagerFactoryBuilder" class="com.ufp.identity4j.truststore.KeyManagerFactoryBuilder">
+    <beans:property name="store" value="classpath:store/example.com.p12"/>
+    <beans:property name="passphrase" value="test"/>
+  </beans:bean>
+
+  <beans:bean name="trustManagerFactoryBuilder" class="com.ufp.identity4j.truststore.TrustManagerFactoryBuilder">
+    <beans:property name="store" value="classpath:store/truststore.jks"/>
+    <beans:property name="passphrase" value="pSnHa(3QDixmi%\"/>
+  </beans:bean>
+</beans:beans>
