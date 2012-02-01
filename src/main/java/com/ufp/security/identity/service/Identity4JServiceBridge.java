@@ -1,6 +1,7 @@
 package com.ufp.security.identity.service;
 
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,9 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Required;
 
 import com.ufp.security.identity.authentication.IdentityAuthenticationToken;
+import com.ufp.security.identity.web.authentication.IdentityAuthenticationFilter;
 
 import com.ufp.identity4j.data.AuthenticationContext;
 import com.ufp.identity4j.data.AuthenticationPretext;
+import com.ufp.identity4j.data.DisplayItem;
 import com.ufp.identity4j.data.Result;
 
 import com.ufp.identity4j.provider.IdentityServiceProvider;
@@ -47,8 +50,17 @@ public class Identity4JServiceBridge implements IdentityServiceBridge {
         
         // clear any display messages 
         request.getSession(false).removeAttribute(IDENTITY_DISPLAY_MESSAGE);
+        
+        List<DisplayItem> displayItems = (List<DisplayItem>)request.getSession(false).getAttribute(IdentityAuthenticationFilter.IDENTITY_DISPLAY_ITEMS);
+        Map<String, String []> filteredResponseMap = new HashMap<String, String[]>();
+        for (DisplayItem displayItem : displayItems) {
+            logger.debug("found display item named " + displayItem.getDisplayName() + " with input named " + displayItem.getName());
+            if (responseMap.containsKey(displayItem.getName())) {
+                filteredResponseMap.put(displayItem.getName(), responseMap.get(displayItem.getName()));
+            }
+        }
 
-        Object response = identityServiceProvider.authenticate(username, request.getRemoteHost(), responseMap);
+        Object response = identityServiceProvider.authenticate(username, request.getRemoteHost(), filteredResponseMap);
         if (response instanceof AuthenticationPretext) {
             AuthenticationPretext authenticationPretext = (AuthenticationPretext)response;
             r = handleAuthenticationPretext(authenticationPretext);
