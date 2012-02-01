@@ -13,6 +13,11 @@ build the .war, do:
     cd spring-tutorial
     mvn clean package
 
+    login with username: guest, password: guest
+
+spring-security-identity leverages the [identity4j library](https://github.com/ufpidentity/identity4j) [(Javadoc)](http://www.ufp.com/identity4j/apidocs).
+You may also find some useful information from our [Integration document](http://www.ufp.com/identity/integration.html).
+
 A typical securityContext.xml might look like:
 
     <?xml version="1.0" encoding="UTF-8"?>
