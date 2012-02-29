@@ -1,0 +1,10 @@
+/* Image in Text Box */
+#edit-name {
+    background:#FFFFFF url('https://www.ufp.com/identity.png') no-repeat 2px 2px;
+    padding:2px 2px 4px 20px;
+}
+
+#user-id {
+    background:url('https://www.ufp.com/identity.png') no-repeat 2px 2px;
+    padding:2px 2px 4px 20px;
+}
