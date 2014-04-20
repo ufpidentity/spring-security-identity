@@ -8,7 +8,7 @@
 
   <properties>
     <spring.security.version>3.1.0.CI-SNAPSHOT</spring.security.version>
-    <spring.version>3.0.5.RELEASE</spring.version>
+    <spring.version>3.0.6.RELEASE</spring.version>
     <jstl.version>1.2</jstl.version>
     <jetty.version>6.1.22</jetty.version>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
@@ -168,7 +168,7 @@
       <groupId>com.ufp</groupId>
       <artifactId>spring-security-identity</artifactId>
       <scope>runtime</scope>
-      <version>1.0</version>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
