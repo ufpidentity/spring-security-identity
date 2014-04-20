@@ -81,11 +81,6 @@
   <beans:bean id="identityServiceProvider" class="com.ufp.identity4j.provider.IdentityServiceProvider" init-method="afterPropertiesSet">
     <beans:property name="keyManagerFactoryBuilder" ref="keyManagerFactoryBuilder"/>
     <beans:property name="trustManagerFactoryBuilder" ref="trustManagerFactoryBuilder"/>
-    <beans:property name="identityResolver" ref="localhostResolver"/>
-  </beans:bean>
-
-  <beans:bean name="localhostResolver" class="com.ufp.identity4j.resolver.StaticIdentityResolver">
-    <beans:property name="uriString" value="https://staging.ufp.com:8443/identity-services/services/"/>
   </beans:bean>
 
   <beans:bean name="keyManagerFactoryBuilder" class="com.ufp.identity4j.truststore.KeyManagerFactoryBuilder">

@@ -87,18 +87,9 @@ A sample configuration for Spring Security requires several beans to be configur
     &lt;beans:property name=&quot;passphrase&quot; value=&quot;${super_secret_truststore_password}&quot;/&gt;
   &lt;/beans:bean&gt;
 
-  &lt;!--   
-    Initially you will be onboarded to the staging farm. Once integration is complete and tested, migration to the production farm will
-    occur and this bean will not be necessary
-  --&gt;
-  &lt;beans:bean name=&quot;stagingResolver&quot; class=&quot;com.ufp.identity4j.resolver.StaticIdentityResolver&quot;&gt;
-    &lt;beans:property name=&quot;uriString&quot; value=&quot;https://staging.ufp.com:8443/identity-services/services/&quot;/&gt;
-  &lt;/beans:bean&gt;
-
   &lt;beans:bean id=&quot;identityServiceProvider&quot; class=&quot;com.ufp.identity4j.provider.IdentityServiceProvider&quot; init-method=&quot;afterPropertiesSet&quot;&gt;
     &lt;beans:property name=&quot;keyManagerFactoryBuilder&quot; ref=&quot;keyManagerFactoryBuilder&quot;/&gt;
     &lt;beans:property name=&quot;trustManagerFactoryBuilder&quot; ref=&quot;trustManagerFactoryBuilder&quot;/&gt;
-    &lt;beans:property name=&quot;identityResolver&quot; ref=&quot;stagingResolver&quot;/&gt;
   &lt;/beans:bean&gt;
 &lt;/beans:beans&gt;
 </pre>
