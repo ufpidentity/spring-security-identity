@@ -1,13 +1,13 @@
 spring-security-identity is a Spring Security implementation of an
 Authentication provider and supporting classes for integration with
-the ufpIdentity service. ufpIdentity provides strong, flexible, user
+the UFP Identity service. UFP Identity provides strong, flexible, user
 login for your website.
 
 To get started, build the .jar using:
 
     mvn clean install
 
-The sample application in the spring-tutorial subdirectory provides a complete login example packaged as a standard .war file. To 
+The sample application in the spring-tutorial subdirectory provides a complete login example packaged as a standard .war file. To
 build the .war, do:
 
     cd spring-tutorial

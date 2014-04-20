@@ -30,7 +30,7 @@
         <checksumPolicy>fail</checksumPolicy>
       </releases>
       <id>maven2-repository.ufp.com</id>
-      <name>ufpIdentity Repository for Maven</name>
+      <name>UFP Identity Repository for Maven</name>
       <url>http://repo.ufp.com/maven2/</url>
       <layout>default</layout>
     </repository>
